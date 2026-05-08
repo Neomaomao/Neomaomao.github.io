@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Neo · 猪？</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Neo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -20,9 +20,10 @@
             padding: 2rem 1.5rem;
             position: relative;
             overflow-x: hidden;
+            cursor: default;
         }
 
-        /* 科技网格 */
+        /* 科技网格背景 */
         body::before {
             content: "";
             position: fixed;
@@ -36,6 +37,18 @@
             background-size: 30px 30px;
             pointer-events: none;
             z-index: 0;
+        }
+
+        /* 鼠标跟随霓虹光 */
+        .mouse-glow {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.15), transparent 60%);
+            pointer-events: none;
+            z-index: 1;
+            transform: translate(-50%, -50%);
+            transition: 0.05s ease;
         }
 
         .glow {
@@ -54,6 +67,12 @@
             z-index: 2;
             max-width: 1300px;
             margin: 0 auto;
+            animation: fadeIn 1.2s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
         }
 
         .hero {
@@ -62,6 +81,7 @@
             border-bottom: 2px solid #0ff;
             padding-bottom: 1.5rem;
             box-shadow: 0 8px 20px -10px rgba(0, 255, 255, 0.3);
+            position: relative;
         }
 
         .badge {
@@ -75,6 +95,12 @@
             letter-spacing: 2px;
             color: #0ff;
             margin-bottom: 1rem;
+            animation: breathe 2.5s infinite alternate;
+        }
+
+        @keyframes breathe {
+            from { box-shadow: 0 0 5px #0ff; }
+            to { box-shadow: 0 0 15px #0ff; }
         }
 
         h1 {
@@ -84,7 +110,7 @@
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
             letter-spacing: 4px;
         }
 
@@ -108,6 +134,7 @@
             font-size: 1rem;
             color: #aaf;
             margin-top: 0.8rem;
+            opacity: 0.9;
         }
 
         .section-title {
@@ -118,10 +145,14 @@
             gap: 12px;
             border-left: 5px solid #f0f;
             padding-left: 20px;
+            transition: 0.3s;
         }
         .section-title i {
             font-size: 2rem;
             color: #0ff;
+        }
+        .section-title:hover {
+            gap: 18px;
         }
 
         .card-grid {
@@ -137,23 +168,49 @@
             border-radius: 28px;
             padding: 1.5rem;
             width: 260px;
-            transition: all 0.25s ease;
-            border: 1px solid rgba(0, 255, 255, 0.4);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 255, 255, 0.3);
             box-shadow: 0 10px 20px -8px rgba(0,0,0,0.5);
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card::before, .anime-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,255,0.08), transparent);
+            transition: 0.5s;
+        }
+
+        .game-card:hover::before, .anime-card:hover::before {
+            left: 100%;
         }
 
         .game-card:hover, .anime-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-10px) scale(1.03);
             border-color: #0ff;
-            box-shadow: 0 0 18px rgba(0, 255, 255, 0.4);
-            background: rgba(10, 15, 45, 0.9);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
+            background: rgba(10, 15, 50, 0.95);
         }
 
         .card-icon {
             font-size: 3.5rem;
             margin-bottom: 1rem;
+            color: #0ff;
+            transition: 0.3s;
         }
+        .game-card:hover .card-icon,
+        .anime-card:hover .card-icon {
+            transform: scale(1.1);
+            color: #fff;
+            filter: drop-shadow(0 0 10px #0ff);
+        }
+
         .game-card h3, .anime-card h3 {
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
@@ -162,7 +219,7 @@
         .game-card p, .anime-card p {
             font-size: 0.85rem;
             color: #ccd6f0;
-            line-height: 1.4;
+            line-height: 1.5;
         }
 
         .divider {
@@ -170,15 +227,42 @@
             height: 2px;
             background: linear-gradient(90deg, #0ff, #f0f, #0ff);
             margin: 20px auto;
+            animation: slide 2s infinite;
+        }
+        @keyframes slide {
+            0% { background-position: -80px 0; }
+            100% { background-position: 80px 0; }
+        }
+
+        /* 状态栏 */
+        .status-box {
+            margin: 3rem auto;
+            text-align: center;
+            background: rgba(0,0,0,0.5);
+            border-radius: 60px;
+            padding: 1.2rem 2rem;
+            max-width: 650px;
+            border: 1px solid #0ff;
+            box-shadow: 0 0 15px rgba(0,255,255,0.2);
+            transition: 0.3s;
+        }
+        .status-box:hover {
+            box-shadow: 0 0 25px rgba(0,255,255,0.35);
+            background: rgba(0,0,0,0.6);
         }
 
         footer {
             text-align: center;
             margin-top: 4rem;
             padding-top: 2rem;
-            border-top: 1px solid rgba(0, 255, 255, 0.3);
-            font-size: 0.8rem;
+            border-top: 1px solid rgba0, 255, 255, 0.3);
+            font-size: 0.9rem;
             color: #7f8cff;
+            line-height: 1.6;
+        }
+        footer i {
+            color: #0ff;
+            margin: 0 4px;
         }
 
         @media (max-width: 700px) {
@@ -186,53 +270,51 @@
             .cn-line { font-size: 1.3rem; }
             .section-title { font-size: 1.6rem; }
             .game-card, .anime-card { width: 220px; padding: 1rem; }
+            .card-icon { font-size: 2.8rem; }
         }
     </style>
 </head>
 <body>
+<div class="mouse-glow" id="mouseGlow"></div>
 <div class="glow"></div>
 <div class="container">
     <div class="hero">
         <div class="badge">✦ PLAYER PROFILE ✦</div>
         <h1>NEO</h1>
-        <div class="cn-line">[ CN: <span>Neo</span> ]</div>
+        <div class="cn-line">[ CN: <span id="typeText"></span> ]</div>
         <div class="tagline">「 不是区 · 看我装唐 · 阴对面一手 」</div>
         <div class="divider"></div>
     </div>
 
-    <!-- 游戏区块：只包含用户指定的四个游戏 -->
+    <!-- 游戏区块 -->
     <div class="section-title">
         <i class="fas fa-gamepad"></i>
         <span>✦ 主玩游戏 ✦</span>
     </div>
     <div class="card-grid">
-        <!-- 艾尔登法环 -->
         <div class="game-card">
             <div class="card-icon"><i class="fas fa-dragon"></i></div>
             <h3>艾尔登法环</h3>
-            <p> 梅琳娜我们喜欢你 <br>“You died.可以看视频复活我 ”</p>
+            <p>梅琳娜我们喜欢你<br>
         </div>
-        <!-- 守望先锋：支援位 -->
         <div class="game-card">
             <div class="card-icon"><i class="fas fa-heartbeat"></i></div>
             <h3>守望先锋</h3>
-            <p>🎯 只会摩西家族  🎯<br>“ 不要再买一送一了。”</p>
+            <p>🎯 只会摩西家族 🎯<br>“不要再买一送一了”</p>
         </div>
-        <!-- Apex Legends -->
         <div class="game-card">
             <div class="card-icon"><i class="fas fa-rocket"></i></div>
             <h3>Apex Legends</h3>
-            <p> 电妹· 练习中<br>“哪来的区？”</p>
+            <p>电妹 · 练习中<br>“哪来的区？”</p>
         </div>
-        <!-- 怪物猎人 双刀 -->
         <div class="game-card">
             <div class="card-icon"><i class="fas fa-paw"></i></div>
             <h3>怪物猎人 双刀</h3>
-            <p>⚔️ ！修脚师傅 ！⚔️<br>“恋足癖？”</p>
+            <p>⚔️ 修脚师傅 恋足癖吗？⚔️<br>
         </div>
     </div>
 
-    <!-- 动漫区块：JOJO + 迷宫饭 + Fate/strange Fake -->
+    <!-- 番剧区块：只留标题，删掉所有中二文案 -->
     <div class="section-title">
         <i class="fas fa-tv"></i>
         <span>✦ 番剧类 ✦</span>
@@ -252,29 +334,57 @@
         </div>
     </div>
 
-    <!-- 动态状态栏（轮换内容只包含用户提到的作品） -->
-    <div style="margin: 3rem auto; text-align: center; background: rgba(0,0,0,0.4); border-radius: 60px; padding: 1rem 1.5rem; max-width: 600px; border: 1px solid #0ff3;">
-        <i class="fas fa-terminal" style="color:#0ff"></i> 
+    <!-- 动态状态栏 -->
+    <div class="status-box">
+        <i class="fas fa-terminal"></i> 
         <span style="font-family: monospace;"> Neo 此时正在：<span id="statusLoop">沉迷apex中</span></span>
-        <script>
-            const statuses = [
-                "枪法不好",
-                "耳朵略聋",
-                "没有意识",
-                "玩得开心就好"
-            ];
-            let idx = 0;
-            setInterval(() => {
-                idx = (idx + 1) % statuses.length;
-                document.getElementById("statusLoop").innerText = statuses[idx];
-            }, 4000);
-        </script>
     </div>
 
     <footer>
         <i class="fas fa-crown"></i> Neo's Gameverse · Powered by GitHub Pages <i class="fas fa-crown"></i><br>
-        欢迎一起开黑 →  <i class="fab fa-twitter"></i> <i class="fab fa-discord"></i> <i class="fab fa-bilibili"></i> （可替换为你的链接）
+        欢迎一起开黑 →  
+        <i class="fab fa-twitter"></i> Twitter  
+        <i class="fab fa-discord"></i> Discord  
+        <i class="fab fa-bilibili"></i> B站
     </footer>
 </div>
+
+<script>
+    // 鼠标跟随霓虹光
+    const glow = document.getElementById('mouseGlow');
+    document.addEventListener('mousemove', (e) => {
+        glow.style.left = e.clientX + 'px';
+        glow.style.top = e.clientY + 'px';
+    });
+
+    // 名字打字机效果
+    const typeText = document.getElementById('typeText');
+    const text = "Neo";
+    let index = 0;
+    function type() {
+        if (index < text.length) {
+            typeText.textContent += text[index];
+            index++;
+            setTimeout(type, 150);
+        }
+    }
+    window.onload = type;
+
+    // 状态轮换
+    const statuses = [
+        "沉迷APEX中",
+        "枪法不好",
+        "耳朵略聋",
+        "没有意识",
+        "被阴了",
+        "玩得开心就好",
+        "在修脚"
+    ];
+    let idx = 0;
+    setInterval(() => {
+        idx = (idx + 1) % statuses.length;
+        document.getElementById("statusLoop").innerText = statuses[idx];
+    }, 3500);
+</script>
 </body>
 </html>
