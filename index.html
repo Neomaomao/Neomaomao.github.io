@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Neo</title>
+    <title>个人主页</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -13,9 +13,9 @@
         }
 
         body {
-            background: radial-gradient(circle at 20% 30%, #0a0f1e, #03060c);
-            font-family: 'Segoe UI', 'Orbitron', 'Rajdhani', monospace;
-            color: #eef4ff;
+            background: linear-gradient(160deg, #f8f9fb 0%, #eef1f5 40%, #f5f6fa 100%);
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            color: #2c3e50;
             min-height: 100vh;
             padding: 2rem 1.5rem;
             position: relative;
@@ -23,7 +23,7 @@
             cursor: default;
         }
 
-        /* 科技网格背景 */
+        /* 浅色网格纹理 */
         body::before {
             content: "";
             position: fixed;
@@ -31,33 +31,35 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 0, 255, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
+            background-image:
+                linear-gradient(rgba(120, 140, 180, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(120, 140, 180, 0.04) 1px, transparent 1px);
+            background-size: 32px 32px;
             pointer-events: none;
             z-index: 0;
         }
 
-        /* 鼠标跟随霓虹光 */
+        /* 鼠标跟随柔光 */
         .mouse-glow {
             position: fixed;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(0, 255, 255, 0.15), transparent 60%);
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, rgba(140, 155, 210, 0.10), transparent 62%);
             pointer-events: none;
             z-index: 1;
             transform: translate(-50%, -50%);
-            transition: 0.05s ease;
+            transition: 0.08s ease-out;
+            border-radius: 50%;
         }
 
+        /* 静态环境光 */
         .glow {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 60% 40%, rgba(0, 255, 255, 0.08), transparent 70%);
+            background: radial-gradient(circle at 55% 35%, rgba(160, 175, 230, 0.06), transparent 70%);
             pointer-events: none;
             z-index: 0;
         }
@@ -65,326 +67,421 @@
         .container {
             position: relative;
             z-index: 2;
-            max-width: 1300px;
+            max-width: 1200px;
             margin: 0 auto;
-            animation: fadeIn 1.2s ease forwards;
+            animation: fadeIn 1s ease forwards;
             opacity: 0;
         }
 
         @keyframes fadeIn {
-            to { opacity: 1; }
+            to {
+                opacity: 1;
+            }
         }
 
+        /* ========== 英雄区域 ========== */
         .hero {
             text-align: center;
-            margin-bottom: 3rem;
-            border-bottom: 2px solid #0ff;
+            margin-bottom: 2.5rem;
             padding-bottom: 1.5rem;
-            box-shadow: 0 8px 20px -10px rgba(0, 255, 255, 0.3);
+            border-bottom: 2px solid #dce3f0;
             position: relative;
         }
 
         .badge {
             display: inline-block;
-            background: #0a0f1ecc;
-            backdrop-filter: blur(8px);
-            border: 1px solid #0ff;
-            padding: 0.3rem 1rem;
+            background: #ffffff;
+            border: 1.5px solid #c5cff0;
+            padding: 0.35rem 1.2rem;
             border-radius: 30px;
             font-size: 0.8rem;
             letter-spacing: 2px;
-            color: #0ff;
+            color: #5b6fb5;
             margin-bottom: 1rem;
-            animation: breathe 2.5s infinite alternate;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(100, 120, 180, 0.08);
+            transition: box-shadow 0.4s;
         }
-
-        @keyframes breathe {
-            from { box-shadow: 0 0 5px #0ff; }
-            to { box-shadow: 0 0 15px #0ff; }
+        .badge:hover {
+            box-shadow: 0 4px 16px rgba(100, 120, 180, 0.16);
         }
 
         h1 {
             font-size: 4rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #fff, #0ff, #f0f);
+            background: linear-gradient(135deg, #3a3f88, #5b6fd6, #8b7eeb);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            text-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
             letter-spacing: 4px;
+            line-height: 1.2;
         }
 
         .cn-line {
-            font-size: 1.8rem;
-            margin-top: 0.5rem;
-            font-family: monospace;
+            font-size: 1.7rem;
+            margin-top: 0.4rem;
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            color: #4a5568;
         }
         .cn-line span {
-            color: #0ff;
-            border-right: 3px solid #0ff;
+            color: #3a3f88;
+            border-right: 3px solid #3a3f88;
             padding-right: 6px;
             animation: blink 0.9s step-end infinite;
         }
         @keyframes blink {
-            0%, 100% { border-color: #0ff; }
-            50% { border-color: transparent; }
+            0%,
+            100% {
+                border-color: #3a3f88;
+            }
+            50% {
+                border-color: transparent;
+            }
         }
 
         .tagline {
             font-size: 1rem;
-            color: #aaf;
-            margin-top: 0.8rem;
-            opacity: 0.9;
+            color: #6b7c95;
+            margin-top: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
         }
 
+        /* ========== 区块标题 ========== */
         .section-title {
-            font-size: 2rem;
+            font-size: 1.9rem;
             margin: 2.5rem 0 1.5rem 0;
             display: flex;
             align-items: center;
             gap: 12px;
-            border-left: 5px solid #f0f;
+            border-left: 5px solid #7c8bdb;
             padding-left: 20px;
-            transition: 0.3s;
+            transition: gap 0.3s;
+            color: #2c3e50;
+            font-weight: 700;
         }
         .section-title i {
-            font-size: 2rem;
-            color: #0ff;
+            font-size: 1.8rem;
+            color: #6b7cd0;
+            transition: color 0.3s;
         }
         .section-title:hover {
             gap: 18px;
         }
+        .section-title:hover i {
+            color: #4a5bb8;
+        }
 
+        /* ========== 卡片网格 ========== */
         .card-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 25px;
+            gap: 24px;
             justify-content: center;
         }
 
-        .game-card, .anime-card {
-            background: rgba(10, 15, 30, 0.75);
-            backdrop-filter: blur(12px);
-            border-radius: 28px;
-            padding: 1.5rem;
-            width: 260px;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            box-shadow: 0 10px 20px -8px rgba(0,0,0,0.5);
+        .game-card,
+        .anime-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 1.6rem 1.4rem;
+            width: 250px;
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 1px solid #e8ecf4;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.04);
             text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        .game-card::before, .anime-card::before {
+        /* 卡片光扫效果 */
+        .game-card::before,
+        .anime-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0,255,255,0.08), transparent);
-            transition: 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(140, 155, 210, 0.07), transparent);
+            transition: left 0.5s ease;
+            z-index: 0;
+            pointer-events: none;
         }
-
-        .game-card:hover::before, .anime-card:hover::before {
+        .game-card:hover::before,
+        .anime-card:hover::before {
             left: 100%;
         }
 
-        .game-card:hover, .anime-card:hover {
-            transform: translateY(-10px) scale(1.03);
-            border-color: #0ff;
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
-            background: rgba(10, 15, 50, 0.95);
+        .game-card:hover,
+        .anime-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            border-color: #bcc5e8;
+            box-shadow: 0 14px 32px rgba(80, 100, 160, 0.13), 0 2px 6px rgba(0, 0, 0, 0.06);
+            background: #fdfdff;
         }
 
         .card-icon {
-            font-size: 3.5rem;
+            font-size: 3.2rem;
             margin-bottom: 1rem;
-            color: #0ff;
-            transition: 0.3s;
+            color: #6b7cd0;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
         }
         .game-card:hover .card-icon,
         .anime-card:hover .card-icon {
-            transform: scale(1.1);
-            color: #fff;
-            filter: drop-shadow(0 0 10px #0ff);
+            transform: scale(1.08);
+            color: #4a5bb8;
         }
 
-        .game-card h3, .anime-card h3 {
-            font-size: 1.5rem;
+        .game-card h3,
+        .anime-card h3 {
+            font-size: 1.35rem;
             margin-bottom: 0.5rem;
             font-weight: 700;
+            color: #2c3e50;
+            position: relative;
+            z-index: 1;
         }
-        .game-card p, .anime-card p {
+        .game-card p,
+        .anime-card p {
             font-size: 0.85rem;
-            color: #ccd6f0;
-            line-height: 1.5;
+            color: #5a6d80;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
         }
 
+        /* ========== 分割线 ========== */
         .divider {
             width: 80px;
-            height: 2px;
-            background: linear-gradient(90deg, #0ff, #f0f, #0ff);
+            height: 2.5px;
+            background: linear-gradient(90deg, #7c8bdb, #b8a9e8, #7c8bdb);
+            background-size: 200% 100%;
             margin: 20px auto;
-            animation: slide 2s infinite;
+            border-radius: 2px;
+            animation: shimmer 2.5s infinite;
         }
-        @keyframes slide {
-            0% { background-position: -80px 0; }
-            100% { background-position: 80px 0; }
+        @keyframes shimmer {
+            0% {
+                background-position: -80px 0;
+            }
+            100% {
+                background-position: 80px 0;
+            }
         }
 
-        /* 状态栏 */
+        /* ========== 状态栏 ========== */
         .status-box {
             margin: 3rem auto;
             text-align: center;
-            background: rgba(0,0,0,0.5);
-            border-radius: 60px;
-            padding: 1.2rem 2rem;
-            max-width: 650px;
-            border: 1px solid #0ff;
-            box-shadow: 0 0 15px rgba(0,255,255,0.2);
-            transition: 0.3s;
+            background: #ffffff;
+            border-radius: 50px;
+            padding: 1.1rem 2rem;
+            max-width: 600px;
+            border: 1.5px solid #dce3f0;
+            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s;
+            color: #4a5568;
+            font-weight: 500;
         }
         .status-box:hover {
-            box-shadow: 0 0 25px rgba(0,255,255,0.35);
-            background: rgba(0,0,0,0.6);
+            box-shadow: 0 6px 22px rgba(80, 100, 160, 0.10);
+            border-color: #c5cff0;
+        }
+        .status-box i {
+            color: #6b7cd0;
+            margin-right: 4px;
         }
 
+        /* ========== 页脚 ========== */
         footer {
             text-align: center;
-            margin-top: 4rem;
+            margin-top: 3.5rem;
             padding-top: 2rem;
-            border-top: 1px solid rgba0, 255, 255, 0.3);
+            border-top: 1.5px solid #e4e9f2;
             font-size: 0.9rem;
-            color: #7f8cff;
-            line-height: 1.6;
+            color: #7d8fa3;
+            line-height: 1.8;
         }
         footer i {
-            color: #0ff;
+            color: #8b9ad0;
             margin: 0 4px;
         }
 
+        /* ========== 响应式 ========== */
         @media (max-width: 700px) {
-            h1 { font-size: 2.5rem; }
-            .cn-line { font-size: 1.3rem; }
-            .section-title { font-size: 1.6rem; }
-            .game-card, .anime-card { width: 220px; padding: 1rem; }
-            .card-icon { font-size: 2.8rem; }
+            h1 {
+                font-size: 2.5rem;
+            }
+            .cn-line {
+                font-size: 1.2rem;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+            .section-title i {
+                font-size: 1.4rem;
+            }
+            .game-card,
+            .anime-card {
+                width: 210px;
+                padding: 1.2rem 1rem;
+            }
+            .card-icon {
+                font-size: 2.6rem;
+            }
+            .game-card h3,
+            .anime-card h3 {
+                font-size: 1.15rem;
+            }
+            .status-box {
+                padding: 1rem 1.5rem;
+                border-radius: 36px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-card,
+            .anime-card {
+                width: 100%;
+                max-width: 300px;
+            }
+            h1 {
+                font-size: 2rem;
+                letter-spacing: 2px;
+            }
+            .cn-line {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-<div class="mouse-glow" id="mouseGlow"></div>
-<div class="glow"></div>
-<div class="container">
-    <div class="hero">
-        <div class="badge">✦ PLAYER PROFILE ✦</div>
-        <h1>NEO</h1>
-        <div class="cn-line">[ CN: <span id="typeText"></span> ]</div>
-        <div class="tagline">「 唐比操作主理人 」</div>
-        <div class="divider"></div>
+
+    <!-- 鼠标跟随柔光 -->
+    <div class="mouse-glow" id="mouseGlow"></div>
+    <!-- 静态环境光 -->
+    <div class="glow"></div>
+
+    <div class="container">
+
+        <!-- ========== 头部区域 ========== -->
+        <div class="hero">
+            <div class="badge">✦ 个人主页 ✦</div>
+            <!-- 👇 把 "你的名字" 改成你的昵称 -->
+            <h1>Neo</h1>
+            <!-- 👇 把 "你的昵称" 改成你的英文/拼音昵称 -->
+            <div class="cn-line">[ CN: <span id="typeText"></span> ]</div>
+            <!-- 👇 把标语改成你自己的 -->
+            <div class="tagline">「 唐比操作主理人 」</div>
+            <div class="divider"></div>
+        </div>
+
+        <!-- ========== 游戏区块 ========== -->
+        <div class="section-title">
+            <i class="fas fa-gamepad"></i>
+            <span>✦ 主玩游戏 ✦</span>
+        </div>
+        <div class="card-grid">
+            <!-- 游戏卡片 1 -->
+            <div class="game-card">
+                <!-- 👇 图标可以换成其他 Font Awesome 图标 -->
+                <div class="card-icon"><i class="fas fa-gamepad"></i></div>
+                <!-- 👇 游戏名称 -->
+                <h3>黑夜君临</h3>
+                <!-- 👇 游戏描述 -->
+                <p>在这里填写描述文字<br>可以换行</p>
+            </div>
+            <!-- 游戏卡片 2 -->
+            <div class="game-card">
+                <div class="card-icon"><i class="fas fa-gamepad"></i></div>
+                <h3>守望先锋 </h3>
+                <p>在这里填写描述文字</p>
+            </div>
+            <!-- 游戏卡片 3 -->
+            <div class="game-card">
+                <div class="card-icon"><i class="fas fa-gamepad"></i></div>
+                <h3>Apex Legends</h3>
+                <p>在这里填写描述文字</p>
+            </div>
+            <!-- 🎯 需要更多游戏卡片？复制上面的 .game-card 即可 -->
+        </div>
+
+        <!-- ========== 番剧区块 ========== -->
+        <div class="section-title">
+            <i class="fas fa-tv"></i>
+            <span>✦ 番剧类 ✦</span>
+        </div>
+        <div class="card-grid">
+            <!-- 番剧卡片 1 -->
+            <div class="anime-card">
+                <div class="card-icon"><i class="fas fa-tv"></i></div>
+                <!-- 👇 番剧名称 -->
+                <h3>番剧名称 1</h3>
+                <p>在这里填写描述文字</p>
+            </div>
+            <!-- 番剧卡片 2 -->
+            <div class="anime-card">
+                <div class="card-icon"><i class="fas fa-tv"></i></div>
+                <h3>番剧名称 2</h3>
+                <p>在这里填写描述文字</p>
+            </div>
+            <!-- 🎯 需要更多番剧卡片？复制上面的 .anime-card 即可 -->
+        </div>
+
+        <!-- ========== 动态状态栏 ========== -->
+        <div class="status-box">
+            <i class="fas fa-terminal"></i>
+            <!-- 👇 把 "你的昵称" 改成你的名字 -->
+            <span style="font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;">
+                Neo 此时正在：<span id="statusLoop">化区成龙</span>
+            </span>
+        </div>
+
+        <!-- ========== 页脚 ========== -->
+        <footer>
+            <!-- 👇 修改页脚信息 -->
+            <i class="fas fa-star"></i> Neo · 个人主页 <i class="fas fa-star"></i><br>
+            欢迎来访
+        </footer>
     </div>
 
-    <!-- 游戏区块 -->
-    <div class="section-title">
-        <i class="fas fa-gamepad"></i>
-        <span>✦ 主玩游戏 ✦</span>
-    </div>
-    <div class="card-grid">
-        <div class="game-card">
-            <div class="card-icon"><i class="fas fa-dragon"></i></div>
-            <h3>艾尔登法环</h3>
-            <p>梅琳娜我们喜欢你<br>
-        </div>
-        <div class="game-card">
-            <div class="card-icon"><i class="fas fa-heartbeat"></i></div>
-            <h3>守望先锋</h3>
-            <p>🎯 只会摩西家族 🎯<br>“不要再买一送一了”</p>
-        </div>
-        <div class="game-card">
-            <div class="card-icon"><i class="fas fa-rocket"></i></div>
-            <h3>Apex Legends</h3>
-            <p>电妹 · 练习中<br>“哪来的区？”</p>
-        </div>
-        <div class="game-card">
-            <div class="card-icon"><i class="fas fa-paw"></i></div>
-            <h3>怪物猎人 双刀</h3>
-            <p>⚔️ 修脚师傅 恋足癖吗？⚔️<br>
-        </div>
-    </div>
+    <script>
+        // 鼠标跟随柔光
+        const glow = document.getElementById('mouseGlow');
+        document.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
 
-    <!-- 番剧区块：只留标题，删掉所有中二文案 -->
-    <div class="section-title">
-        <i class="fas fa-tv"></i>
-        <span>✦ 番剧类 ✦</span>
-    </div>
-    <div class="card-grid">
-        <div class="anime-card">
-            <div class="card-icon"><i class="fas fa-star-of-life"></i></div>
-            <h3>JOJO的奇妙冒险</h3>
-        </div>
-        <div class="anime-card">
-            <div class="card-icon"><i class="fas fa-utensils"></i></div>
-            <h3>迷宫饭</h3>
-        </div>
-        <div class="anime-card">
-            <div class="card-icon"><i class="fas fa-mask"></i></div>
-            <h3>Fate/strange Fake</h3>
-        </div>
-    </div>
+        // 名字打字机效果
+        const typeText = document.getElementById('typeText');
+        // 👇 把 "你的昵称" 改成你想要的英文/拼音昵称
+        const text = "Neo";
+        let index = 0;
 
-    <!-- 动态状态栏 -->
-    <div class="status-box">
-        <i class="fas fa-terminal"></i> 
-        <span style="font-family: monospace;"> Neo 此时正在：<span id="statusLoop">沉迷apex中</span></span>
-    </div>
-
-    <footer>
-        <i class="fas fa-crown"></i> Neo's Gameverse · Powered by GitHub Pages <i class="fas fa-crown"></i><br>
-        欢迎一起开黑 →  
-        <i class="fab fa-twitter"></i> Twitter  
-        <i class="fab fa-discord"></i> Discord  
-        <i class="fab fa-bilibili"></i> B站
-    </footer>
-</div>
-
-<script>
-    // 鼠标跟随霓虹光
-    const glow = document.getElementById('mouseGlow');
-    document.addEventListener('mousemove', (e) => {
-        glow.style.left = e.clientX + 'px';
-        glow.style.top = e.clientY + 'px';
-    });
-
-    // 名字打字机效果
-    const typeText = document.getElementById('typeText');
-    const text = "Neo";
-    let index = 0;
-    function type() {
-        if (index < text.length) {
-            typeText.textContent += text[index];
-            index++;
-            setTimeout(type, 150);
+        function type() {
+            if (index < text.length) {
+                typeText.textContent += text[index];
+                index++;
+                setTimeout(type, 140);
+            }
         }
-    }
-    window.onload = type;
+        window.onload = type;
 
-    // 状态轮换
-    const statuses = [
-        "沉迷APEX中",
-        "枪法不好",
-        "耳朵略聋",
-        "没有意识",
-        "被阴了",
-        "玩得开心就好",
-        "在修脚"
-    ];
-    let idx = 0;
-    setInterval(() => {
-        idx = (idx + 1) % statuses.length;
-        document.getElementById("statusLoop").innerText = statuses[idx];
-    }, 3500);
-</script>
+        // 状态轮换
+        // 👇 修改下面的状态列表，换成你自己的状态文案
+        const statuses = [
+            "化区成龙",
+        ];
+        let idx = 0;
+        setInterval(() => {
+            idx = (idx + 1) % statuses.length;
+            document.getElementById("statusLoop").innerText = statuses[idx];
+        }, 3500);
+    </script>
 </body>
 </html>
