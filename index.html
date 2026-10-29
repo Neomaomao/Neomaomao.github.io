@@ -1,487 +1,1434 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>个人主页</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08060d">
+  <meta name="description" content="Neo 的个人主页与游戏清单。">
+  <title>NEO // AFTER HOURS</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2308060d'/%3E%3Cpath d='M7 6h4l5 10 5-10h4v20h-4V14l-5 9-5-9v12H7z' fill='%23ff3d9a'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --bg: #08060d;
+      --bg-deep: #050409;
+      --panel: rgba(17, 11, 26, 0.78);
+      --text: #f3edf7;
+      --text-soft: #c8bcd3;
+      --muted: #a496b3;
+      --dim: #7e708e;
+      --pink: #ff3d9a;
+      --pink-soft: #ff8fc1;
+      --cyan: #5be7ff;
+      --amber: #ffc37b;
+      --line: rgba(255, 255, 255, 0.085);
+      --line-pink: rgba(255, 61, 154, 0.3);
+      --mono: "Cascadia Mono", "SFMono-Regular", "Consolas", "Courier New", monospace;
+      --sans: "Bahnschrift", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --display: "Bahnschrift", "Arial Narrow", "Impact", "Microsoft YaHei", sans-serif;
+    }
 
-        body {
-            background: linear-gradient(160deg, #f8f9fb 0%, #eef1f5 40%, #f5f6fa 100%);
-            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
-            color: #2c3e50;
-            min-height: 100vh;
-            padding: 2rem 1.5rem;
-            position: relative;
-            overflow-x: hidden;
-            cursor: default;
-        }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
 
-        /* 浅色网格纹理 */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(rgba(120, 140, 180, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(120, 140, 180, 0.04) 1px, transparent 1px);
-            background-size: 32px 32px;
-            pointer-events: none;
-            z-index: 0;
-        }
+    html {
+      scroll-behavior: smooth;
+    }
 
-        /* 鼠标跟随柔光 */
-        .mouse-glow {
-            position: fixed;
-            width: 480px;
-            height: 480px;
-            background: radial-gradient(circle, rgba(140, 155, 210, 0.10), transparent 62%);
-            pointer-events: none;
-            z-index: 1;
-            transform: translate(-50%, -50%);
-            transition: 0.08s ease-out;
-            border-radius: 50%;
-        }
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(58vw 58vw at 4% -8%, rgba(255, 61, 154, 0.11), transparent 64%),
+        radial-gradient(55vw 55vw at 104% 22%, rgba(91, 231, 255, 0.07), transparent 64%),
+        radial-gradient(60vw 48vw at 50% 112%, rgba(255, 195, 123, 0.055), transparent 68%),
+        var(--bg);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
 
-        /* 静态环境光 */
-        .glow {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 55% 35%, rgba(160, 175, 230, 0.06), transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 92% 78% at 50% 28%, #000 5%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse 92% 78% at 50% 28%, #000 5%, transparent 80%);
+    }
 
-        .container {
-            position: relative;
-            z-index: 2;
-            max-width: 1200px;
-            margin: 0 auto;
-            animation: fadeIn 1s ease forwards;
-            opacity: 0;
-        }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      pointer-events: none;
+      opacity: 0.23;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.042) 0,
+        rgba(255, 255, 255, 0.042) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+    }
 
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
+    ::selection {
+      color: #0a0610;
+      background: var(--pink);
+    }
 
-        /* ========== 英雄区域 ========== */
-        .hero {
-            text-align: center;
-            margin-bottom: 2.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid #dce3f0;
-            position: relative;
-        }
+    a {
+      color: inherit;
+    }
 
-        .badge {
-            display: inline-block;
-            background: #ffffff;
-            border: 1.5px solid #c5cff0;
-            padding: 0.35rem 1.2rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            color: #5b6fb5;
-            margin-bottom: 1rem;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(100, 120, 180, 0.08);
-            transition: box-shadow 0.4s;
-        }
-        .badge:hover {
-            box-shadow: 0 4px 16px rgba(100, 120, 180, 0.16);
-        }
+    button {
+      font: inherit;
+    }
 
-        h1 {
-            font-size: 4rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #3a3f88, #5b6fd6, #8b7eeb);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            letter-spacing: 4px;
-            line-height: 1.2;
-        }
+    :focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 4px;
+    }
 
-        .cn-line {
-            font-size: 1.7rem;
-            margin-top: 0.4rem;
-            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-            color: #4a5568;
-        }
-        .cn-line span {
-            color: #3a3f88;
-            border-right: 3px solid #3a3f88;
-            padding-right: 6px;
-            animation: blink 0.9s step-end infinite;
-        }
-        @keyframes blink {
-            0%,
-            100% {
-                border-color: #3a3f88;
-            }
-            50% {
-                border-color: transparent;
-            }
-        }
+    .skip-link {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 100;
+      transform: translateY(-160%);
+      padding: 10px 14px;
+      color: var(--bg-deep);
+      background: var(--cyan);
+      font: 11px var(--mono);
+      text-decoration: none;
+      transition: transform 0.2s ease;
+    }
 
-        .tagline {
-            font-size: 1rem;
-            color: #6b7c95;
-            margin-top: 0.7rem;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
+    .skip-link:focus {
+      transform: translateY(0);
+    }
 
-        /* ========== 区块标题 ========== */
-        .section-title {
-            font-size: 1.9rem;
-            margin: 2.5rem 0 1.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-left: 5px solid #7c8bdb;
-            padding-left: 20px;
-            transition: gap 0.3s;
-            color: #2c3e50;
-            font-weight: 700;
-        }
-        .section-title i {
-            font-size: 1.8rem;
-            color: #6b7cd0;
-            transition: color 0.3s;
-        }
-        .section-title:hover {
-            gap: 18px;
-        }
-        .section-title:hover i {
-            color: #4a5bb8;
-        }
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      pointer-events: none;
+      opacity: 0.024;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 160px 160px;
+    }
 
-        /* ========== 卡片网格 ========== */
-        .card-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 24px;
-            justify-content: center;
-        }
+    .page {
+      position: relative;
+      z-index: 2;
+      width: min(1120px, calc(100% - 64px));
+      margin: 0 auto;
+      padding-bottom: 34px;
+    }
 
-        .game-card,
-        .anime-card {
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 1.6rem 1.4rem;
-            width: 250px;
-            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            border: 1px solid #e8ecf4;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.04);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+    .page::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 61, 154, 0.55), rgba(91, 231, 255, 0.32), transparent);
+      opacity: 0.55;
+    }
 
-        /* 卡片光扫效果 */
-        .game-card::before,
-        .anime-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(140, 155, 210, 0.07), transparent);
-            transition: left 0.5s ease;
-            z-index: 0;
-            pointer-events: none;
-        }
-        .game-card:hover::before,
-        .anime-card:hover::before {
-            left: 100%;
-        }
+    /* ---------- Top bar ---------- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      min-height: 78px;
+      border-bottom: 1px solid var(--line);
+    }
 
-        .game-card:hover,
-        .anime-card:hover {
-            transform: translateY(-8px) scale(1.03);
-            border-color: #bcc5e8;
-            box-shadow: 0 14px 32px rgba(80, 100, 160, 0.13), 0 2px 6px rgba(0, 0, 0, 0.06);
-            background: #fdfdff;
-        }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
 
-        .card-icon {
-            font-size: 3.2rem;
-            margin-bottom: 1rem;
-            color: #6b7cd0;
-            transition: all 0.3s;
-            position: relative;
-            z-index: 1;
-        }
-        .game-card:hover .card-icon,
-        .anime-card:hover .card-icon {
-            transform: scale(1.08);
-            color: #4a5bb8;
-        }
+    .brand-mark {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 auto;
+      background: var(--pink);
+      box-shadow: 0 0 18px rgba(255, 61, 154, 0.7);
+      transform: rotate(45deg);
+    }
 
-        .game-card h3,
-        .anime-card h3 {
-            font-size: 1.35rem;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-            color: #2c3e50;
-            position: relative;
-            z-index: 1;
-        }
-        .game-card p,
-        .anime-card p {
-            font-size: 0.85rem;
-            color: #5a6d80;
-            line-height: 1.6;
-            position: relative;
-            z-index: 1;
-        }
+    .brand-name {
+      font-family: var(--display);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.24em;
+    }
 
-        /* ========== 分割线 ========== */
-        .divider {
-            width: 80px;
-            height: 2.5px;
-            background: linear-gradient(90deg, #7c8bdb, #b8a9e8, #7c8bdb);
-            background-size: 200% 100%;
-            margin: 20px auto;
-            border-radius: 2px;
-            animation: shimmer 2.5s infinite;
-        }
-        @keyframes shimmer {
-            0% {
-                background-position: -80px 0;
-            }
-            100% {
-                background-position: 80px 0;
-            }
-        }
+    .brand-sub {
+      color: var(--muted);
+      font: 9px var(--mono);
+      letter-spacing: 0.16em;
+    }
 
-        /* ========== 状态栏 ========== */
-        .status-box {
-            margin: 3rem auto;
-            text-align: center;
-            background: #ffffff;
-            border-radius: 50px;
-            padding: 1.1rem 2rem;
-            max-width: 600px;
-            border: 1.5px solid #dce3f0;
-            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.04);
-            transition: all 0.3s;
-            color: #4a5568;
-            font-weight: 500;
-        }
-        .status-box:hover {
-            box-shadow: 0 6px 22px rgba(80, 100, 160, 0.10);
-            border-color: #c5cff0;
-        }
-        .status-box i {
-            color: #6b7cd0;
-            margin-right: 4px;
-        }
+    .topnav {
+      display: flex;
+      gap: 28px;
+      margin-left: auto;
+      margin-right: 38px;
+    }
 
-        /* ========== 页脚 ========== */
-        footer {
-            text-align: center;
-            margin-top: 3.5rem;
-            padding-top: 2rem;
-            border-top: 1.5px solid #e4e9f2;
-            font-size: 0.9rem;
-            color: #7d8fa3;
-            line-height: 1.8;
-        }
-        footer i {
-            color: #8b9ad0;
-            margin: 0 4px;
-        }
+    .topnav a {
+      position: relative;
+      padding: 7px 0;
+      color: var(--muted);
+      font: 9px var(--mono);
+      letter-spacing: 0.14em;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
 
-        /* ========== 响应式 ========== */
-        @media (max-width: 700px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-            .cn-line {
-                font-size: 1.2rem;
-            }
-            .section-title {
-                font-size: 1.5rem;
-            }
-            .section-title i {
-                font-size: 1.4rem;
-            }
-            .game-card,
-            .anime-card {
-                width: 210px;
-                padding: 1.2rem 1rem;
-            }
-            .card-icon {
-                font-size: 2.6rem;
-            }
-            .game-card h3,
-            .anime-card h3 {
-                font-size: 1.15rem;
-            }
-            .status-box {
-                padding: 1rem 1.5rem;
-                border-radius: 36px;
-                font-size: 0.9rem;
-            }
-        }
+    .topnav a::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 2px;
+      left: 0;
+      height: 1px;
+      background: var(--pink);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
 
-        @media (max-width: 480px) {
-            .game-card,
-            .anime-card {
-                width: 100%;
-                max-width: 300px;
-            }
-            h1 {
-                font-size: 2rem;
-                letter-spacing: 2px;
-            }
-            .cn-line {
-                font-size: 1rem;
-            }
-        }
-    </style>
+    .topnav a:hover {
+      color: var(--text);
+    }
+
+    .topnav a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .bgm {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 11px;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--line);
+      font: 9px var(--mono);
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .bgm:hover {
+      color: var(--text);
+      border-color: var(--line-pink);
+    }
+
+    .bgm.is-on {
+      color: var(--pink-soft);
+      border-color: var(--line-pink);
+      background: rgba(255, 61, 154, 0.055);
+    }
+
+    .bgm b {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .bgm.is-on b {
+      color: var(--pink-soft);
+    }
+
+    .eq {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      width: 14px;
+      height: 12px;
+    }
+
+    .eq i {
+      display: block;
+      width: 2px;
+      height: 4px;
+      background: currentColor;
+      transition: height 0.25s ease;
+    }
+
+    .eq i:nth-child(2) { height: 8px; }
+    .eq i:nth-child(3) { height: 5px; }
+    .eq i:nth-child(4) { height: 10px; }
+
+    .bgm.is-on .eq i {
+      animation: eq-pulse 0.72s ease-in-out infinite alternate;
+    }
+
+    .bgm.is-on .eq i:nth-child(2) {
+      animation-duration: 0.53s;
+      animation-delay: -0.2s;
+    }
+
+    .bgm.is-on .eq i:nth-child(3) {
+      animation-duration: 0.86s;
+      animation-delay: -0.4s;
+    }
+
+    .bgm.is-on .eq i:nth-child(4) {
+      animation-duration: 0.61s;
+      animation-delay: -0.1s;
+    }
+
+    @keyframes eq-pulse {
+      from { height: 3px; }
+      to { height: 12px; }
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      display: grid;
+      grid-template-columns: 168px minmax(0, 1fr) 286px;
+      gap: clamp(30px, 4vw, 54px);
+      align-items: center;
+      padding: clamp(56px, 8vw, 92px) 0 clamp(50px, 7vw, 80px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .portrait {
+      align-self: center;
+      min-width: 0;
+    }
+
+    .avatar {
+      position: relative;
+      display: block;
+      aspect-ratio: 1;
+      padding: 7px;
+      overflow: hidden;
+      border: 1px solid var(--line-pink);
+      background:
+        linear-gradient(135deg, rgba(255, 61, 154, 0.14), rgba(91, 231, 255, 0.055) 55%, rgba(255, 255, 255, 0.02));
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.025) inset,
+        0 18px 55px rgba(0, 0, 0, 0.34);
+      text-decoration: none;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .avatar:hover {
+      border-color: rgba(255, 61, 154, 0.72);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.045) inset,
+        0 22px 70px rgba(255, 61, 154, 0.1);
+    }
+
+    .avatar img {
+      position: absolute;
+      inset: 7px;
+      z-index: 2;
+      width: calc(100% - 14px);
+      height: calc(100% - 14px);
+      object-fit: cover;
+      image-rendering: pixelated;
+      opacity: 0;
+      filter: saturate(0.92) contrast(1.03);
+      transition: opacity 0.45s ease, transform 0.5s ease;
+    }
+
+    .avatar img.is-loaded {
+      opacity: 1;
+    }
+
+    .avatar:hover img {
+      transform: scale(1.035);
+    }
+
+    .avatar-fallback {
+      position: absolute;
+      inset: 7px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      color: rgba(255, 255, 255, 0.17);
+      background:
+        linear-gradient(145deg, rgba(255, 61, 154, 0.14), transparent 52%),
+        #120b1c;
+      font-family: var(--display);
+      font-size: 4.6rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .avatar-fallback::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 9px);
+    }
+
+    .avatar-open {
+      position: absolute;
+      inset: 7px;
+      z-index: 3;
+      display: grid;
+      place-items: center;
+      color: var(--text);
+      background: rgba(5, 4, 9, 0.58);
+      font: 9px var(--mono);
+      letter-spacing: 0.16em;
+      opacity: 0;
+      transition: opacity 0.22s ease;
+    }
+
+    .avatar:hover .avatar-open {
+      opacity: 1;
+    }
+
+    .corner {
+      position: absolute;
+      z-index: 4;
+      width: 9px;
+      height: 9px;
+      pointer-events: none;
+      border-color: var(--cyan);
+      opacity: 0.7;
+    }
+
+    .corner.tl { top: -1px; left: -1px; border-top: 1px solid; border-left: 1px solid; }
+    .corner.tr { top: -1px; right: -1px; border-top: 1px solid; border-right: 1px solid; }
+    .corner.bl { bottom: -1px; left: -1px; border-bottom: 1px solid; border-left: 1px solid; }
+    .corner.br { right: -1px; bottom: -1px; border-right: 1px solid; border-bottom: 1px solid; }
+
+    .steam-id {
+      margin: 13px 0 0;
+      color: var(--dim);
+      font: 8px/1.7 var(--mono);
+      letter-spacing: 0.09em;
+      overflow-wrap: anywhere;
+    }
+
+    .steam-id span {
+      color: var(--muted);
+      letter-spacing: 0.14em;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 18px;
+      color: var(--pink-soft);
+      font: 9px var(--mono);
+      letter-spacing: 0.2em;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 26px;
+      height: 1px;
+      background: var(--pink);
+      box-shadow: 0 0 10px rgba(255, 61, 154, 0.5);
+    }
+
+    h1 {
+      position: relative;
+      margin: 0 0 0 -5px;
+      color: var(--text);
+      font-family: var(--display);
+      font-size: clamp(5rem, 9.2vw, 8.4rem);
+      font-weight: 900;
+      line-height: 0.8;
+      letter-spacing: -0.025em;
+      text-shadow:
+        3px 0 0 rgba(255, 61, 154, 0.16),
+        -3px 0 0 rgba(91, 231, 255, 0.1),
+        0 0 42px rgba(255, 255, 255, 0.045);
+    }
+
+    h1 .dot {
+      color: var(--pink);
+      text-shadow: 0 0 24px rgba(255, 61, 154, 0.65);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 11px;
+      margin-top: 34px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 41px;
+      padding: 0 17px;
+      border: 1px solid var(--line);
+      color: var(--text-soft);
+      background: rgba(255, 255, 255, 0.015);
+      font: 9px var(--mono);
+      letter-spacing: 0.13em;
+      text-decoration: none;
+      transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn span {
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      color: var(--text);
+      border-color: var(--line-pink);
+    }
+
+    .btn-primary {
+      color: #170710;
+      background: var(--pink);
+      border-color: var(--pink);
+      box-shadow: 0 0 26px rgba(255, 61, 154, 0.15);
+    }
+
+    .btn-primary:hover {
+      color: #170710;
+      background: #ff69b1;
+      border-color: #ff69b1;
+      box-shadow: 0 0 32px rgba(255, 61, 154, 0.26);
+    }
+
+    .btn-ghost:hover {
+      color: var(--cyan);
+      border-color: rgba(91, 231, 255, 0.38);
+    }
+
+    /* ---------- Status terminal ---------- */
+    .status-card {
+      position: relative;
+      align-self: center;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.105);
+      background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.035), transparent 34%),
+        var(--panel);
+      box-shadow: 0 22px 70px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(9px);
+      -webkit-backdrop-filter: blur(9px);
+    }
+
+    .status-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--pink), rgba(255, 61, 154, 0.12) 55%, var(--cyan));
+      opacity: 0.8;
+    }
+
+    .status-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 16px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.018);
+      font: 8px var(--mono);
+      letter-spacing: 0.16em;
+    }
+
+    .status-head .rec {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--pink-soft);
+    }
+
+    .status-head .rec::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--pink);
+      box-shadow: 0 0 9px rgba(255, 61, 154, 0.8);
+      animation: rec-blink 2.2s step-end infinite;
+    }
+
+    @keyframes rec-blink {
+      0%, 72%, 100% { opacity: 1; }
+      76%, 92% { opacity: 0.18; }
+    }
+
+    .status-rows {
+      padding: 4px 16px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 13px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.075);
+    }
+
+    .status-row:last-child {
+      border-bottom: 0;
+    }
+
+    .status-row span {
+      flex: 0 0 auto;
+      color: var(--dim);
+      font: 8px var(--mono);
+      letter-spacing: 0.15em;
+    }
+
+    .status-row strong {
+      color: var(--text-soft);
+      font: 10px var(--mono);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-align: right;
+    }
+
+    .status-row strong.online {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #8dffb0;
+    }
+
+    .status-row strong.online::before {
+      content: "";
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #8dffb0;
+      box-shadow: 0 0 8px rgba(141, 255, 176, 0.8);
+    }
+
+    .status-row strong.clock {
+      color: var(--cyan);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.09em;
+    }
+
+    .status-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 16px;
+      border-top: 1px solid var(--line);
+      color: var(--dim);
+      background: rgba(0, 0, 0, 0.16);
+      font: 7px var(--mono);
+      letter-spacing: 0.15em;
+    }
+
+    .signal {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 11px;
+    }
+
+    .signal i {
+      display: block;
+      width: 2px;
+      height: 3px;
+      background: var(--pink);
+      opacity: 0.65;
+    }
+
+    .signal i:nth-child(2) { height: 6px; }
+    .signal i:nth-child(3) { height: 4px; }
+    .signal i:nth-child(4) { height: 8px; }
+    .signal i:nth-child(5) { height: 10px; }
+    .signal i:nth-child(6) { height: 5px; }
+
+    body.is-playing .signal i {
+      animation: eq-pulse 0.72s ease-in-out infinite alternate;
+    }
+
+    body.is-playing .signal i:nth-child(2n) {
+      animation-duration: 0.55s;
+      animation-delay: -0.2s;
+    }
+
+    body.is-playing .signal i:nth-child(3n) {
+      animation-duration: 0.86s;
+      animation-delay: -0.35s;
+    }
+
+    /* ---------- Sections ---------- */
+    .block {
+      margin-top: clamp(56px, 8vw, 88px);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-no {
+      display: inline-grid;
+      place-items: center;
+      min-width: 30px;
+      height: 22px;
+      padding: 0 6px;
+      color: var(--pink-soft);
+      border: 1px solid var(--line-pink);
+      font: 8px var(--mono);
+      letter-spacing: 0.12em;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      color: var(--text);
+      font-family: var(--display);
+      font-size: clamp(1.45rem, 2.6vw, 1.9rem);
+      font-weight: 700;
+      letter-spacing: 0.035em;
+      line-height: 1.1;
+    }
+
+    .section-en {
+      color: var(--dim);
+      font: 8px var(--mono);
+      letter-spacing: 0.16em;
+      white-space: nowrap;
+    }
+
+    .section-rule {
+      flex: 1;
+      height: 1px;
+      min-width: 16px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.13), transparent);
+    }
+
+    .section-note {
+      color: var(--dim);
+      font: 7px var(--mono);
+      letter-spacing: 0.14em;
+      white-space: nowrap;
+    }
+
+    .menu-list {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .menu-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) auto 18px;
+      align-items: center;
+      gap: 20px;
+      padding: 25px 10px 25px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.065);
+      text-decoration: none;
+      transition: background 0.25s ease, padding-left 0.25s ease;
+    }
+
+    .menu-item:last-child {
+      border-bottom: 0;
+    }
+
+    .menu-item::before {
+      content: "";
+      position: absolute;
+      top: 15%;
+      bottom: 15%;
+      left: 0;
+      width: 2px;
+      background: var(--pink);
+      transform: scaleY(0);
+      transform-origin: center;
+      box-shadow: 0 0 16px rgba(255, 61, 154, 0.45);
+      transition: transform 0.25s ease;
+    }
+
+    a.menu-item {
+      cursor: pointer;
+    }
+
+    a.menu-item:hover,
+    a.menu-item:focus-visible {
+      padding-left: 18px;
+      background: linear-gradient(90deg, rgba(255, 61, 154, 0.065), rgba(255, 61, 154, 0.012) 60%, transparent);
+    }
+
+    a.menu-item:hover::before,
+    a.menu-item:focus-visible::before {
+      transform: scaleY(1);
+    }
+
+    .menu-index {
+      color: var(--dim);
+      font: 9px var(--mono);
+      letter-spacing: 0.12em;
+      transition: color 0.2s ease;
+    }
+
+    a.menu-item:hover .menu-index,
+    a.menu-item:focus-visible .menu-index {
+      color: var(--pink-soft);
+    }
+
+    .menu-body {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .menu-name {
+      display: block;
+      color: var(--text);
+      font-family: var(--display);
+      font-size: clamp(1.12rem, 2vw, 1.34rem);
+      font-weight: 700;
+      letter-spacing: 0.045em;
+      line-height: 1.2;
+      transition: color 0.2s ease;
+    }
+
+    a.menu-item:hover .menu-name,
+    a.menu-item:focus-visible .menu-name {
+      color: #fff;
+    }
+
+    .menu-desc {
+      display: block;
+      color: var(--muted);
+      font: 10px/1.6 var(--mono);
+      letter-spacing: 0.025em;
+    }
+
+    .menu-tag {
+      padding: 5px 7px;
+      color: rgba(255, 195, 123, 0.72);
+      border: 1px solid rgba(255, 195, 123, 0.16);
+      font: 7px var(--mono);
+      letter-spacing: 0.13em;
+      white-space: nowrap;
+    }
+
+    .menu-arrow {
+      color: var(--pink-soft);
+      font: 15px var(--mono);
+      opacity: 0;
+      transform: translate(-4px, 4px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    a.menu-item:hover .menu-arrow,
+    a.menu-item:focus-visible .menu-arrow {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      margin-top: clamp(64px, 9vw, 104px);
+      padding-top: 25px;
+      border-top: 1px solid var(--line);
+    }
+
+    .footer-top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .footer-kicker {
+      margin: 0 0 7px;
+      color: var(--pink-soft);
+      font: 8px var(--mono);
+      letter-spacing: 0.16em;
+    }
+
+    .footer-line {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+    }
+
+    .to-top {
+      color: var(--muted);
+      font: 8px var(--mono);
+      letter-spacing: 0.14em;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .to-top:hover {
+      color: var(--cyan);
+    }
+
+    .footer-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px 24px;
+      margin-top: 34px;
+      padding-top: 15px;
+      color: var(--dim);
+      border-top: 1px solid rgba(255, 255, 255, 0.045);
+      font: 7px var(--mono);
+      letter-spacing: 0.13em;
+    }
+
+    .footer-bottom a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-bottom a:hover {
+      color: var(--pink-soft);
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 1040px) {
+      .hero {
+        grid-template-columns: 150px minmax(0, 1fr) 260px;
+        gap: 30px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .page {
+        width: min(100% - 48px, 760px);
+      }
+
+      .topnav {
+        gap: 18px;
+        margin-right: 24px;
+      }
+
+      .hero {
+        grid-template-columns: 132px minmax(0, 1fr);
+        gap: 30px;
+      }
+
+      .status-card {
+        grid-column: 1 / -1;
+        margin-top: 4px;
+      }
+
+      .status-rows {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 38px;
+      }
+
+      .status-row:nth-last-child(2) {
+        border-bottom: 0;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .page {
+        width: calc(100% - 36px);
+      }
+
+      .topbar {
+        min-height: 68px;
+      }
+
+      .brand-sub {
+        display: none;
+      }
+
+      .topnav {
+        display: none;
+      }
+
+      .bgm {
+        margin-left: auto;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 48px 0 48px;
+      }
+
+      .portrait {
+        width: 112px;
+      }
+
+      .eyebrow {
+        margin-bottom: 14px;
+      }
+
+      h1 {
+        font-size: clamp(4.25rem, 21vw, 6.2rem);
+        margin-left: -3px;
+      }
+
+      .actions {
+        margin-top: 28px;
+      }
+
+      .status-rows {
+        gap: 0 22px;
+      }
+
+      .status-row {
+        padding: 11px 0;
+      }
+
+      .section-head {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .section-en {
+        display: none;
+      }
+
+      .section-rule {
+        min-width: 12px;
+      }
+
+      .section-note {
+        display: none;
+      }
+
+      .menu-item {
+        grid-template-columns: 30px minmax(0, 1fr) auto;
+        gap: 13px;
+        padding: 21px 4px;
+      }
+
+      a.menu-item:hover,
+      a.menu-item:focus-visible {
+        padding-left: 12px;
+      }
+
+      .menu-arrow {
+        display: none;
+      }
+
+      .menu-name {
+        font-size: 1.08rem;
+      }
+
+      .menu-desc {
+        font-size: 9px;
+      }
+
+      .footer-top {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .status-rows {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .status-row:nth-last-child(2) {
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.075);
+      }
+
+      .menu-tag {
+        display: none;
+      }
+
+      .menu-item {
+        grid-template-columns: 26px minmax(0, 1fr);
+      }
+
+      .actions .btn {
+        flex: 1;
+      }
+
+      .footer-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
 </head>
 <body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <div class="noise" aria-hidden="true"></div>
 
-    <!-- 鼠标跟随柔光 -->
-    <div class="mouse-glow" id="mouseGlow"></div>
-    <!-- 静态环境光 -->
-    <div class="glow"></div>
+  <div class="page">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="NEO After Hours，回到顶部">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">NEO</span>
+        <span class="brand-sub">// AFTER HOURS</span>
+      </a>
 
-    <div class="container">
+      <nav class="topnav" aria-label="主导航">
+        <a href="#menu">01 / 游戏</a>
+      </nav>
 
-        <!-- ========== 头部区域 ========== -->
-        <div class="hero">
-            <div class="badge">✦ 个人主页 ✦</div>
-            <!-- 👇 把 "你的名字" 改成你的昵称 -->
-            <h1>Neo</h1>
-            <!-- 👇 把 "你的昵称" 改成你的英文/拼音昵称 -->
-            <div class="cn-line">[ CN: <span id="typeText"></span> ]</div>
-            <!-- 👇 把标语改成你自己的 -->
-            <div class="tagline">「 唐比操作主理人 」</div>
-            <div class="divider"></div>
+      <button class="bgm" id="bgmButton" type="button" aria-pressed="false" aria-label="开启背景音乐">
+        <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>BGM <b id="bgmState">OFF</b></span>
+      </button>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <!-- 头像：Steam 像素头像已内嵌，换图时替换下方 img 的 src 即可 -->
+        <div class="portrait">
+          <a class="avatar" href="https://steamcommunity.com/profiles/76561199138280739/" target="_blank" rel="noopener noreferrer" aria-label="打开 Neo 的 Steam 主页">
+            <span class="avatar-fallback" aria-hidden="true">N</span>
+            <img
+              id="steamAvatar"
+              src="data:image/jpeg;base64,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"
+              alt="Neo 的 Steam 像素头像"
+              width="64"
+              height="64"
+              loading="eager"
+            >
+            <span class="avatar-open" aria-hidden="true">OPEN STEAM ↗</span>
+            <i class="corner tl" aria-hidden="true"></i>
+            <i class="corner tr" aria-hidden="true"></i>
+            <i class="corner bl" aria-hidden="true"></i>
+            <i class="corner br" aria-hidden="true"></i>
+          </a>
+          <p class="steam-id"><span>STEAM_ID64</span><br>76561199138280739</p>
         </div>
 
-        <!-- ========== 游戏区块 ========== -->
-        <div class="section-title">
-            <i class="fas fa-gamepad"></i>
-            <span>✦ 主玩游戏 ✦</span>
-        </div>
-        <div class="card-grid">
-            <!-- 游戏卡片 1 -->
-            <div class="game-card">
-                <!-- 👇 图标可以换成其他 Font Awesome 图标 -->
-                <div class="card-icon"><i class="fas fa-gamepad"></i></div>
-                <!-- 👇 游戏名称 -->
-                <h3>黑夜君临</h3>
-                <!-- 👇 游戏描述 -->
-                <p></p>
-            </div>
-            <!-- 游戏卡片 2 -->
-            <div class="game-card">
-                <div class="card-icon"><i class="fas fa-gamepad"></i></div>
-                <h3>守望先锋 </h3>
-                <p></p>
-            </div>
-            <!-- 游戏卡片 3 -->
-            <div class="game-card">
-                <div class="card-icon"><i class="fas fa-gamepad"></i></div>
-                <h3>Apex Legends</h3>
-                <p></p>
-            </div>
-            <!-- 🎯 需要更多游戏卡片？复制上面的 .game-card 即可 -->
+        <div class="identity">
+          <p class="eyebrow">NIGHT SHIFT / PERSONAL TERMINAL</p>
+          <!-- 主标题：直接改这里 -->
+          <h1 id="hero-title">NEO<span class="dot">.</span></h1>
+          <div class="actions">
+            <a class="btn btn-primary" href="https://steamcommunity.com/profiles/76561199138280739/" target="_blank" rel="noopener noreferrer">
+              STEAM PROFILE <span>↗</span>
+            </a>
+            <a class="btn btn-ghost" href="#menu">
+              查看酒单 <span>↓</span>
+            </a>
+          </div>
         </div>
 
-        <!-- ========== 番剧区块 ========== -->
-        <div class="section-title">
-            <i class="fas fa-tv"></i>
-            <span>✦ 动漫 ✦</span>
-        </div>
-        <div class="card-grid">
-            <!-- 番剧卡片 1 -->
-            <div class="anime-card">
-                <div class="card-icon"><i class="fas fa-tv"></i></div>
-                <!-- 👇 番剧名称 -->
-                <h3>JOJO的奇妙冒险</h3>
-                <p></p>
+        <aside class="status-card" aria-label="当前状态">
+          <div class="status-head">
+            <span>STATUS.LOG</span>
+            <span class="rec">REC</span>
+          </div>
+          <div class="status-rows">
+            <div class="status-row">
+              <span>USER</span>
+              <strong>NEO</strong>
             </div>
-            <!-- 番剧卡片 2 -->
-            <div class="anime-card">
-                <div class="card-icon"><i class="fas fa-tv"></i></div>
-                <h3>迷宫饭</h3>
-                <p></p>
+            <div class="status-row">
+              <span>STEAM</span>
+              <strong class="online">ONLINE</strong>
             </div>
-            <!-- 🎯 需要更多番剧卡片？复制上面的 .anime-card 即可 -->
+            <div class="status-row">
+              <span>LOCAL</span>
+              <strong class="clock" id="localClock">--:--:--</strong>
+            </div>
+            <div class="status-row">
+              <span>MEMBER</span>
+              <strong>SINCE 2021</strong>
+            </div>
+          </div>
+          <div class="status-foot">
+            <span class="signal" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            <span>OPEN ALL NIGHT</span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="block" id="menu" aria-labelledby="menu-title">
+        <div class="section-head">
+          <span class="section-no" aria-hidden="true">01</span>
+          <h2 id="menu-title">今日酒单</h2>
+          <span class="section-en">FAVORITE GAMES</span>
+          <span class="section-rule" aria-hidden="true"></span>
+          <span class="section-note">ON TAP</span>
         </div>
 
-        <!-- ========== 动态状态栏 ========== -->
-        <div class="status-box">
-            <i class="fas fa-terminal"></i>
-            <!-- 👇 把 "你的昵称" 改成你的名字 -->
-            <span style="font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;">
-                Neo 此时正在：<span id="statusLoop">化区成龙</span>
+        <!-- 游戏清单：复制或删除 .menu-item 即可增减 -->
+        <div class="menu-list">
+          <a class="menu-item" href="https://store.steampowered.com/app/1172470/Apex_Legends/" target="_blank" rel="noopener noreferrer" aria-label="Apex Legends，在 Steam 上查看">
+            <span class="menu-index" aria-hidden="true">01</span>
+            <span class="menu-body">
+              <span class="menu-name">APEX LEGENDS</span>
+              <span class="menu-desc">FPS / 大逃杀 / 三人小队</span>
             </span>
+            <span class="menu-tag">HOUSE POUR</span>
+            <span class="menu-arrow" aria-hidden="true">↗</span>
+          </a>
+
+          <a class="menu-item" href="https://store.steampowered.com/app/2357570/Overwatch_2/" target="_blank" rel="noopener noreferrer" aria-label="守望先锋 2，在 Steam 上查看">
+            <span class="menu-index" aria-hidden="true">02</span>
+            <span class="menu-body">
+              <span class="menu-name">守望先锋 2</span>
+              <span class="menu-desc">FPS / 英雄射击 / 团队竞技</span>
+            </span>
+            <span class="menu-tag">HOUSE POUR</span>
+            <span class="menu-arrow" aria-hidden="true">↗</span>
+          </a>
         </div>
+      </section>
 
-        <!-- ========== 页脚 ========== -->
-        <footer>
-            <!-- 👇 修改页脚信息 -->
-            <i class="fas fa-star"></i> Neo · 个人主页 <i class="fas fa-star"></i><br>
-            欢迎来访
-        </footer>
-    </div>
+    </main>
 
-    <script>
-        // 鼠标跟随柔光
-        const glow = document.getElementById('mouseGlow');
-        document.addEventListener('mousemove', (e) => {
-            glow.style.left = e.clientX + 'px';
-            glow.style.top = e.clientY + 'px';
+    <footer class="footer">
+      <div class="footer-top">
+        <div>
+          <p class="footer-kicker">LAST CALL / 02:00</p>
+          <p class="footer-line">STEAM / PUBLIC PROFILE</p>
+        </div>
+        <a class="to-top" href="#top">BACK TO TOP ↑</a>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year">2026</span> NEO</span>
+        <span>DESIGNED FOR THE NIGHT SHIFT</span>
+        <a href="https://steamcommunity.com/profiles/76561199138280739/" target="_blank" rel="noopener noreferrer">STEAM ↗</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const $ = (selector, scope = document) => scope.querySelector(selector);
+      const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
+
+      /* Local clock */
+      const clock = $("#localClock");
+      const pad = (value) => String(value).padStart(2, "0");
+
+      function updateClock() {
+        const now = new Date();
+        if (clock) {
+          clock.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+        }
+      }
+
+      updateClock();
+      window.setInterval(updateClock, 1000);
+
+      const year = $("#year");
+      if (year) {
+        year.textContent = new Date().getFullYear();
+      }
+
+      /* The Steam avatar is embedded as a data URI so the page works offline. */
+      const avatar = $("#steamAvatar");
+      if (avatar) {
+        if (avatar.complete) {
+          avatar.classList.add("is-loaded");
+        } else {
+          avatar.addEventListener("load", () => avatar.classList.add("is-loaded"), { once: true });
+        }
+      }
+
+      /* A tiny opt-in synth loop, generated in the browser.
+         No audio files, no autoplay. */
+      const bgmButton = $("#bgmButton");
+      const bgmState = $("#bgmState");
+      let audioContext = null;
+      let masterGain = null;
+      let loopTimer = null;
+      let step = 0;
+      let isPlaying = false;
+
+      const chords = [
+        [220.00, 261.63, 329.63, 392.00],
+        [196.00, 246.94, 293.66, 392.00],
+        [174.61, 220.00, 261.63, 329.63],
+        [196.00, 246.94, 311.13, 369.99]
+      ];
+
+      const melody = [659.25, 587.33, 523.25, 440.00, 523.25, 587.33, 493.88, 440.00];
+
+      function playVoice(frequency, start, duration, level, type) {
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(frequency, start);
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(level, start + 0.35);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+
+        oscillator.connect(gain);
+        gain.connect(masterGain);
+        oscillator.start(start);
+        oscillator.stop(start + duration + 0.05);
+      }
+
+      function scheduleBar() {
+        if (!audioContext || !masterGain) return;
+
+        const start = audioContext.currentTime + 0.06;
+        const chord = chords[step % chords.length];
+        const duration = 3.7;
+
+        chord.forEach((frequency, index) => {
+          playVoice(frequency, start + index * 0.045, duration, 0.026, index % 2 ? "sine" : "triangle");
         });
 
-        // 名字打字机效果
-        const typeText = document.getElementById('typeText');
-        // 👇 把 "你的昵称" 改成你想要的英文/拼音昵称
-        const text = "Neo";
-        let index = 0;
+        playVoice(melody[step % melody.length], start + 0.7, 1.35, 0.018, "sine");
+        playVoice(melody[(step + 3) % melody.length] / 2, start + 2.1, 1.25, 0.014, "sine");
 
-        function type() {
-            if (index < text.length) {
-                typeText.textContent += text[index];
-                index++;
-                setTimeout(type, 140);
-            }
+        step += 1;
+      }
+
+      function startAudio() {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
+        if (!AudioContextClass) {
+          bgmButton.disabled = true;
+          bgmState.textContent = "N/A";
+          isPlaying = false;
+          return;
         }
-        window.onload = type;
 
-        // 状态轮换
-        // 👇 修改下面的状态列表，换成你自己的状态文案
-        const statuses = [
-            "化区成龙",
-        ];
-        let idx = 0;
-        setInterval(() => {
-            idx = (idx + 1) % statuses.length;
-            document.getElementById("statusLoop").innerText = statuses[idx];
-        }, 3500);
-    </script>
+        try {
+          audioContext = new AudioContextClass();
+        } catch (error) {
+          bgmButton.disabled = true;
+          bgmState.textContent = "N/A";
+          isPlaying = false;
+          return;
+        }
+
+        if (audioContext.state === "suspended") {
+          audioContext.resume().catch(() => {});
+        }
+
+        masterGain = audioContext.createGain();
+
+        const delay = audioContext.createDelay(1);
+        const feedback = audioContext.createGain();
+        const wet = audioContext.createGain();
+
+        delay.delayTime.value = 0.38;
+        feedback.gain.value = 0.24;
+        wet.gain.value = 0.22;
+
+        masterGain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+        masterGain.gain.exponentialRampToValueAtTime(0.72, audioContext.currentTime + 1.2);
+
+        masterGain.connect(audioContext.destination);
+        masterGain.connect(delay);
+        delay.connect(feedback);
+        feedback.connect(delay);
+        delay.connect(wet);
+        wet.connect(audioContext.destination);
+
+        scheduleBar();
+        loopTimer = window.setInterval(scheduleBar, 3600);
+        return true;
+      }
+
+      function stopAudio() {
+        if (!audioContext) return;
+
+        window.clearInterval(loopTimer);
+        loopTimer = null;
+
+        const now = audioContext.currentTime;
+        masterGain.gain.cancelScheduledValues(now);
+        masterGain.gain.setTargetAtTime(0.0001, now, 0.22);
+
+        const contextToClose = audioContext;
+        audioContext = null;
+        masterGain = null;
+
+        window.setTimeout(() => {
+          if (contextToClose.state !== "closed") {
+            contextToClose.close().catch(() => {});
+          }
+        }, 700);
+      }
+
+      function setPlaying(nextState) {
+        isPlaying = nextState;
+        bgmButton.classList.toggle("is-on", isPlaying);
+        bgmButton.setAttribute("aria-pressed", String(isPlaying));
+        bgmButton.setAttribute("aria-label", isPlaying ? "关闭背景音乐" : "开启背景音乐");
+        bgmState.textContent = isPlaying ? "ON" : "OFF";
+        document.body.classList.toggle("is-playing", isPlaying);
+
+        if (isPlaying) {
+          if (!startAudio()) {
+            isPlaying = false;
+            bgmButton.classList.remove("is-on");
+            bgmButton.setAttribute("aria-pressed", "false");
+            bgmButton.setAttribute("aria-label", "开启背景音乐");
+            bgmState.textContent = "N/A";
+            document.body.classList.remove("is-playing");
+          }
+        } else {
+          stopAudio();
+        }
+      }
+
+      if (bgmButton) {
+        bgmButton.addEventListener("click", () => {
+          setPlaying(!isPlaying);
+        });
+      }
+
+      /* Stop the loop when the tab is hidden to keep things quiet. */
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden && isPlaying) {
+          setPlaying(false);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
